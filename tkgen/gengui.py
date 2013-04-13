@@ -26,6 +26,7 @@ Created on Apr 21, 2011
 
 from Tkinter import Tk, IntVar, StringVar
 import Tkinter
+import ttk
 import json
 
 
@@ -119,11 +120,10 @@ class TkJson(Tk):
         position, weight, padding, opt = self._get_options(desc)
 
         try:
-            widget_factory = getattr(Tkinter, name)
+            widget_factory = getattr(ttk, name)
         except AttributeError:
             try:
-                import ttk
-                widget_factory = getattr(ttk, name)
+                widget_factory = getattr(Tkinter, name)
             except AttributeError:
                 raise AttributeError('Neither Tkinter nor ttk have a' +
                                      ' widget named: ', name)
@@ -136,7 +136,7 @@ class TkJson(Tk):
                     rowspan=weight[1],
                     sticky=padding[2],
                     padx=padding[0],
-                    pady=padding[1])
+                    pady=padding[0])
 
         # propaget size settings when needed.
         if 'width' in opt or 'height' in opt:
@@ -252,7 +252,6 @@ class TkJson(Tk):
         return var
 
     def entry(self, name, key=None, cmd=None, focus=False):
-
         """
         Returns the text of a TK widget.
 
@@ -412,3 +411,17 @@ class TkJson(Tk):
         index -- If index < current # of items - insert at the top.
         """
         return treeview.insert(parent, index, text=name, values=values)
+
+    def center(self):
+        """
+        {Armando Rivera, 2013-04-13}
+        Centers the root object
+        """
+        self.update_idletasks()
+        w = self.winfo_width()
+        h = self.winfo_height()
+        ws = self.winfo_screenwidth()
+        hs = self.winfo_screenheight()
+        x = (ws/2) - (w/2)
+        y = (hs/2) - (h/2)
+        self.geometry('%dx%d+%d+%d' % (w, h, x, y))
